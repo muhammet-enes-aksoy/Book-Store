@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BookStore.Api.BookOperations.CreateBook;
 using BookStore.Api.BookOperations.DeleteBook;
 using BookStore.Api.BookOperations.GetBookDetail;
 using BookStore.Api.BookOperations.GetBooks;
@@ -6,102 +7,82 @@ using BookStore.Api.BookOperations.UpdateBook;
 using BookStore.Api.DbOperations;
 using BookStore.BookOperations.CreateBook;
 using BookStore.BookOperations.GetBookDetail;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStore.Api.Controllers
+namespace BookStore.Api.Controllers;
+[ApiController]
+[Route("[controller]s")]
+public class BookController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BooksController(BookStoreDbContext context, IMapper mapper) : ControllerBase
+    private readonly BookStoreDbContext _context;
+
+    public BookController(BookStoreDbContext context)
     {
-        private readonly BookStoreDbContext context = context;
-        private readonly IMapper mapper = mapper;
+        _context = context;
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetBooks()
+    [HttpGet]
+    public IActionResult GetBooks()
+    {
+        GetBooksQuery query = new GetBooksQuery(_context);
+        var result = query.Handle();
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public Book GetById(int id)
+    {
+        var book = _context.Books.Where(book => book.Id == id).SingleOrDefault();
+        return book;
+    }
+
+    [HttpPost]
+    public IActionResult AddBook([FromBody] CreateBookCommand.CreateBookModel newBook)
+    {
+        try
         {
-            var query = new GetBooksQuery(context, mapper);
+            CreateBookCommand command = new CreateBookCommand(_context)
+            {
+                Model = newBook
+            };
+            command.Handle();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+        return Ok();
+    }
 
-            var result = await query.HandleAsync();
-
-            return Ok(result);
+    [HttpPut("{id}")]
+    public IActionResult UpdateBook(int id, [FromBody] Book updatedBook)
+    {
+        var book = _context.Books.SingleOrDefault(x => x.Id == id);
+        if (book is null)
+        {
+            return BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        book.GenreId = updatedBook.GenreId != default ? updatedBook.GenreId : book.GenreId;
+        //If updatedBook's GenreID has changed, change it. If not changed, use default value
+        book.PageCount = updatedBook.PageCount != default ? updatedBook.PageCount : book.PageCount;
+        book.Title = updatedBook.Title != default ? updatedBook.Title : book.Title;
+        book.PublishDate = updatedBook.PublishDate != default ? updatedBook.PublishDate : book.PublishDate;
+        _context.SaveChanges();
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteBook(int id)
+    {
+        var book = _context.Books.SingleOrDefault(x => x.Id == id);
+        if (book is null)
         {
-            BookDetailViewModel result;
-
-            try
-            {
-                var query = new GetBookDetailQuery(context, mapper)
-                {
-                    BookId = id
-                };
-
-                result = await query.HandleAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok(result);
+            return BadRequest();
         }
-
-        [HttpPost]
-        public async Task<IActionResult> AddBook([FromBody] CreateBookModel createBookModel)
-        {
-            var command = new CreateBookCommand(context, mapper);
-
-            try
-            {
-                command.Model = createBookModel;
-                await command.HandleAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] UpdateBookModel updateBookModel)
-        {
-            try
-            {
-                var command = new UpdateBookCommand(context);
-
-                command.BookId = id;
-                command.Model = updateBookModel;
-
-                await command.HandleAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(int id)
-        {
-            DeleteBookCommand command = new DeleteBookCommand(context);
-            try
-            {
-
-                command.BookId = id;
-                await command.HandleAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok();
-        }
+        _context.Books.Remove(book);
+        _context.SaveChanges();
+        return Ok();
     }
 }
