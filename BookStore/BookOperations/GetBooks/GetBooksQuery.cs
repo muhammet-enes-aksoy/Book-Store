@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using BookStore.Api.DbOperations;
-using Microsoft.EntityFrameworkCore;
+using BookStore.DbOperations;
 
-namespace BookStore.Api.BookOperations.GetBooks;
+namespace BookStore.BookOperations.GetBooks;
 public class GetBooksQuery
 {
     private readonly BookStoreDbContext _dbContext;

@@ -1,6 +1,6 @@
-﻿using BookStore.Api.DbOperations;
+﻿using BookStore.DbOperations;
 
-namespace BookStore.Api.BookOperations.UpdateBook;
+namespace BookStore.BookOperations.UpdateBook;
 public class UpdateBookCommand
 {
     private readonly BookStoreDbContext _dbContext;

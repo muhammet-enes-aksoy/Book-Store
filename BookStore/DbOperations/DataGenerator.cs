@@ -1,6 +1,4 @@
-﻿using BookStore.Api;
-using BookStore.Api.DbOperations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.DbOperations;
 public static class DataGenerator

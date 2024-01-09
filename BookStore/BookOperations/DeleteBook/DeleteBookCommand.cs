@@ -1,7 +1,6 @@
-﻿using BookStore.Api.DbOperations;
+﻿using BookStore.DbOperations;
 
-namespace BookStore.Api.BookOperations.DeleteBook;
-
+namespace BookStore.BookOperations.DeleteBook;
 public class DeleteBookCommand
 {
     private readonly BookStoreDbContext _dbContext;

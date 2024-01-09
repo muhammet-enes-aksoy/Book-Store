@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using BookStore.Api;
-using BookStore.Api.DbOperations;
-using Microsoft.EntityFrameworkCore;
+using BookStore.DbOperations;
 
 namespace BookStore.BookOperations.CreateBook;
-
 public class CreateBookCommand
 {
     public CreateBookModel Model { get; set; }

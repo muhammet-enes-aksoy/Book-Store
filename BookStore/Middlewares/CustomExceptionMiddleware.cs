@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using Newtonsoft.Json;
 
-namespace BookStore.Api.Middlewares;
+namespace BookStore.Middlewares;
 
 public class CustomExceptionMiddleware
 {

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using BookStore.Api.BookOperations.GetBooks;
+using BookStore.BookOperations.GetBooks;
 using BookStore.BookOperations.CreateBook;
 using BookStore.BookOperations.GetBookDetail;
-using BookStore.Common;
 
-namespace BookStore.Api.Common;
+namespace BookStore.Common;
 public class MappingProfile : Profile
 {
     public MappingProfile()
