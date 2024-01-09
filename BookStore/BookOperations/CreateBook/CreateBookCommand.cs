@@ -5,25 +5,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.BookOperations.CreateBook;
 
-public class CreateBookCommand(BookStoreDbContext dbContext, IMapper mapper)
+public class CreateBookCommand
 {
-    private readonly BookStoreDbContext dbContext = dbContext;
-    private readonly IMapper mapper = mapper;
-    public CreateBookModel? Model { get; set; }
+    public CreateBookModel Model { get; set; }
+    private readonly BookStoreDbContext _dbContext;
 
-    public async Task HandleAsync()
+    public CreateBookCommand(BookStoreDbContext dbContext)
     {
-        // if model is null, throw exception
-        if (Model is null)
-            throw new ArgumentNullException($"Model : {nameof(Model)} can not be null.");
+        _dbContext = dbContext;
+    }
 
-        // if book title already exists, throw exception
-        if (await dbContext.Books.AnyAsync(x => x.Title == Model.Title))
-            throw new InvalidOperationException($"The book already exists with title: {Model.Title}");
+    public void Handle()
+    {
+        var book = _dbContext.Books.SingleOrDefault(x => x.Title == Model.Title);
+        if (book != null)
+        {
+            throw new InvalidOperationException("The book already exists");
 
-        var book = mapper.Map<Book>(Model);
+        }
+        book = new Book
+        {
+            Title = Model.Title,
+            GenreId = Model.GenreId,
+            PageCount = Model.PageCount,
+            PublishDate = Model.PublishDate
+        };
+        _dbContext.Books.Add(book);
+        _dbContext.SaveChanges();
+    }
 
-        dbContext.Books.Add(book);
-        dbContext.SaveChanges();
+    public class CreateBookModel
+    {
+        public string Title { get; set; }
+        public int GenreId { get; set; }
+        public int PageCount { get; set; }
+        public DateTime PublishDate { get; set; }
     }
 }

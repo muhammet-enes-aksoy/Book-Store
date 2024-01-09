@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BookStore.Api;
+namespace BookStore;
+
 public class Book
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -9,4 +10,5 @@ public class Book
     public int GenreId { get; set; }
     public int PageCount { get; set; }
     public DateTime PublishDate { get; set; }
+
 }

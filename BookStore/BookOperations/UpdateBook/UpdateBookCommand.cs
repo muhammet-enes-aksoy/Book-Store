@@ -1,21 +1,35 @@
 ﻿using BookStore.Api.DbOperations;
 
 namespace BookStore.Api.BookOperations.UpdateBook;
-public class UpdateBookCommand(BookStoreDbContext dbContext)
+public class UpdateBookCommand
 {
-    private readonly BookStoreDbContext dbContext = dbContext;
-
+    private readonly BookStoreDbContext _dbContext;
     public int BookId { get; set; }
-    public UpdateBookModel? Model { get; set; }
+    public UpdateBookViewModel Model { get; set; }
 
-    public async Task HandleAsync()
+    public UpdateBookCommand(BookStoreDbContext dbContext)
     {
-        var book =
-            await dbContext.Books.FindAsync(BookId)
-                ?? throw new InvalidOperationException($"Book not found with id {BookId}");
-
-        book.Title = Model?.Title != default ? Model.Title : book.Title;
-        book.GenreId = Model.GenreId != default ? Model.GenreId : book.GenreId;
-        dbContext.SaveChanges();
+        _dbContext = dbContext;
     }
+
+    public void Handle()
+    {
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == BookId);
+        if (book is null)
+        {
+            throw new InvalidOperationException("No book to delete update!");
+        }
+
+        book.GenreId = Model.GenreId != default ? Model.GenreId : book.GenreId;
+        //If updatedBook's GenreID has changed, change it. If not changed, use default value
+        book.Title = Model.Title != default ? Model.Title : book.Title;
+        _dbContext.SaveChanges();
+    }
+
+    public class UpdateBookViewModel
+    {
+        public string Title { get; set; }
+        public int GenreId { get; set; }
+    }
+
 }

@@ -2,22 +2,24 @@
 
 namespace BookStore.Api.BookOperations.DeleteBook;
 
-public class DeleteBookCommand(BookStoreDbContext dbContext)
+public class DeleteBookCommand
 {
-    private readonly BookStoreDbContext dbContext = dbContext;
+    private readonly BookStoreDbContext _dbContext;
     public int BookId { get; set; }
 
-    public async Task HandleAsync()
+    public DeleteBookCommand(BookStoreDbContext dbContext)
     {
-        // if book id is less than or equal to 0, throw exception
-        if (BookId <= 0)
-            throw new InvalidOperationException("Book Id must be greater than 0");
+        _dbContext = dbContext;
+    }
 
-        // if book is not found, throw exception
-        var book = await dbContext.Books.FindAsync(BookId)
-            ?? throw new InvalidOperationException($"Book not found with Id: {BookId}");
-
-        dbContext.Books.Remove(book);
-        dbContext.SaveChanges();
+    public void Handle()
+    {
+        var book = _dbContext.Books.SingleOrDefault(x => x.Id == BookId);
+        if (book is null)
+        {
+            throw new InvalidOperationException("No book to delete found!");
+        }
+        _dbContext.Books.Remove(book);
+        _dbContext.SaveChanges();
     }
 }
