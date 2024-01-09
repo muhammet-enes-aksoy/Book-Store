@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using BookStore.BookOperations.GetBooks;
-using BookStore.BookOperations.CreateBook;
-using BookStore.BookOperations.GetBookDetail;
+using BookStore.Application.BookOperations.Commands.CreateBook;
+using BookStore.Application.BookOperations.Queries.GetBookDetail;
+using BookStore.Application.BookOperations.Queries.GetBooks;
 
 namespace BookStore.Common;
 public class MappingProfile : Profile
