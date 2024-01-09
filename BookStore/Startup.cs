@@ -1,6 +1,7 @@
 using System.Reflection;
-using BookStore.Api.DbOperations;
-using BookStore.Api.Middlewares;
+using BookStore.DbOperations;
+using BookStore.Middlewares;
+using BookStore.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore;
@@ -21,6 +22,7 @@ public class Startup
         services.AddSwaggerGen(); //Prepares documentation for Swagger
         services.AddDbContext<BookStoreDbContext>(options => options.UseInMemoryDatabase(databaseName: "BookStoreDB"));
         services.AddAutoMapper(Assembly.GetExecutingAssembly()); // AutoMapper Configurations
+        services.AddSingleton<ILoggerService, ConsoleLogger>();
 
     }
 
