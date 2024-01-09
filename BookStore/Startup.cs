@@ -1,4 +1,6 @@
+using System.Reflection;
 using BookStore.Api.DbOperations;
+using BookStore.Api.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore;
@@ -18,6 +20,8 @@ public class Startup
         services.AddEndpointsApiExplorer(); // Discovers endpoints
         services.AddSwaggerGen(); //Prepares documentation for Swagger
         services.AddDbContext<BookStoreDbContext>(options => options.UseInMemoryDatabase(databaseName: "BookStoreDB"));
+        services.AddAutoMapper(Assembly.GetExecutingAssembly()); // AutoMapper Configurations
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -32,6 +36,7 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
+        app.UseCustomExceptionMiddle(); //Custom Middle Ware
         app.UseEndpoints(x => { x.MapControllers(); }); 
     }
 }

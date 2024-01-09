@@ -17,7 +17,7 @@ public class DeleteBookCommand
         var book = _dbContext.Books.SingleOrDefault(x => x.Id == BookId);
         if (book is null)
         {
-            throw new InvalidOperationException("No book to delete found!");
+            throw new InvalidOperationException("No books found to delete!");
         }
         _dbContext.Books.Remove(book);
         _dbContext.SaveChanges();

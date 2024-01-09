@@ -6,26 +6,17 @@ namespace BookStore.Api.BookOperations.GetBooks;
 public class GetBooksQuery
 {
     private readonly BookStoreDbContext _dbContext;
-
-    public GetBooksQuery(BookStoreDbContext dbContext)
+private readonly IMapper _mapper;
+    public GetBooksQuery(BookStoreDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public List<BooksViewModel> Handle()
     {
         var bookList = _dbContext.Books.OrderBy(x => x.Id).ToList<Book>();
-        List<BooksViewModel> vm = new List<BooksViewModel>();
-        foreach (var book in bookList)
-        {
-            vm.Add(new BooksViewModel()
-            {
-                Title = book.Title,
-                Genre = ((BookStore.Common.GenreEnum)book.GenreId).ToString(),
-                PublishDate = book.PublishDate.Date.ToString("dd/MM/yyyy"),
-                PageCount = book.PageCount
-            });
-        }
+        var vm = _mapper.Map<List<Book>,  List<BooksViewModel>>(bookList);
         return vm;
     }
 

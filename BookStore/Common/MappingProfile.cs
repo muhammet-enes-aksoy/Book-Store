@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using BookStore.Api.BookOperations.GetBookDetail;
 using BookStore.Api.BookOperations.GetBooks;
 using BookStore.BookOperations.CreateBook;
+using BookStore.BookOperations.GetBookDetail;
 using BookStore.Common;
 
 namespace BookStore.Api.Common;
@@ -9,13 +9,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<CreateBookModel, Book>();
-
-        CreateMap<Book, BooksViewModel>()
-        .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => ((GenreEnum)src.GenreId).ToString()))
-        .ForMember(dest => dest.PublishDate, opt => opt.MapFrom(src => src.PublishDate.Date.ToString("dd/MM/yyyy")));
-
-        CreateMap<Book, BookDetailViewModel>()
+        CreateMap<CreateBookCommand.CreateBookModel, Book>(); //CreateBookModel objesi, book objesine maplenebilir olsun
+        CreateMap<Book, GetBookDetailQuery.BookDetailViewModel>()
+            .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => ((GenreEnum)src.GenreId).ToString()))
+            .ForMember(dest => dest.PublishDate, opt => opt.MapFrom(src => src.PublishDate.Date.ToString("dd/MM/yyyy")));
+        CreateMap<Book, GetBooksQuery.BooksViewModel>()
             .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => ((GenreEnum)src.GenreId).ToString()))
             .ForMember(dest => dest.PublishDate, opt => opt.MapFrom(src => src.PublishDate.Date.ToString("dd/MM/yyyy")));
     }
