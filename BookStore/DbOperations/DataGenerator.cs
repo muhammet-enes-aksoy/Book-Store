@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookStore.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.DbOperations;
 public static class DataGenerator
@@ -10,6 +11,33 @@ public static class DataGenerator
 
         if (context.Books.Any())
             return;
+
+        context.Genres.AddRange(
+                new Genre
+                {
+                    Name = "Classics"
+                },
+                new Genre
+                {
+                    Name = "GraphicNovel"
+                },
+                new Genre
+                {
+                    Name = "Mystery"
+                },
+                new Genre
+                {
+                    Name = "Poetry"
+                },
+                new Genre
+                {
+                    Name = "Novel"
+                },
+                new Genre
+                {
+                    Name = "Humor"
+                }
+        );
 
         context.Books.AddRange(
                 new Book

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using BookStore.Entities;
 namespace BookStore.DbOperations;
 public class BookStoreDbContext : DbContext
 {
@@ -8,4 +8,5 @@ public class BookStoreDbContext : DbContext
     }
 
     public DbSet<Book> Books { get; set; }
+    public DbSet<Genre> Genres { get; set; }
 }
