@@ -8,8 +8,4 @@ public class Genre
     public string Name { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public Genre()
-    {
-
-    }
 }

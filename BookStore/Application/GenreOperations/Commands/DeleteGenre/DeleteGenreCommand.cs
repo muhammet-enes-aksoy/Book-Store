@@ -1,7 +1,6 @@
 using BookStore.DbOperations;
 
 namespace BookStore.Application.GenreOperations.Commands.DeleteGenre;
-
 public class DeleteGenreCommand
 {
     private readonly BookStoreDbContext _dbContext;

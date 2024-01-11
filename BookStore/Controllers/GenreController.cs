@@ -34,8 +34,10 @@ public class GenreController : ControllerBase
     [HttpGet("id")]
     public ActionResult GetGenreDetail(int id)
     {
-        var query = new GetGenreDetailQuery(_context, _mapper);
-        query.GenreId = id;
+        var query = new GetGenreDetailQuery(_context, _mapper)
+        {
+            GenreId = id
+        };
         var validator = new GetGenreDetailQueryValidator();
         validator.ValidateAndThrow(query);
         var obj = query.Handle();

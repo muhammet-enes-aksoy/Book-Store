@@ -1,7 +1,6 @@
 using BookStore.DbOperations;
 
 namespace BookStore.Application.GenreOperations.Commands.UpdateGenre;
-
 public class UpdateGenreCommand
 {
     private readonly BookStoreDbContext _dbContext;

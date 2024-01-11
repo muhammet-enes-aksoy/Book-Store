@@ -2,7 +2,6 @@ using AutoMapper;
 using BookStore.DbOperations;
 
 namespace BookStore.Application.GenreOperations.Queries.GetGenres;
-
 public class GetGenresQuery
 {
     public readonly BookStoreDbContext _context;

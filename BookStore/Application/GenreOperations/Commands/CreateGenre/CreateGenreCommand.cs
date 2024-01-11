@@ -3,7 +3,6 @@ using BookStore.DbOperations;
 using BookStore.Entities;
 
 namespace BookStore.Application.GenreOperations.Commands.CreateGenre;
-
 public class CreateGenreCommand
 {
     public CreateGenreModel Model { get; set; }

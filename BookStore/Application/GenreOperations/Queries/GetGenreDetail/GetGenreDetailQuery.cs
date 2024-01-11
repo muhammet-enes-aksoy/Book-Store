@@ -2,7 +2,6 @@ using AutoMapper;
 using BookStore.DbOperations;
 
 namespace BookStore.Application.GenreOperations.Queries.GetGenreDetail;
-
 public class GetGenreDetailQuery
 {
     public int GenreId { get; set; }
