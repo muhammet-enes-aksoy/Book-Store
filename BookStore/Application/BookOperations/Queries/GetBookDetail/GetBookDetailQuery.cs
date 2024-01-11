@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookStore.DbOperations;
 using BookStore.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Application.BookOperations.Queries.GetBookDetail;
 public class GetBookDetailQuery
@@ -17,7 +18,7 @@ public class GetBookDetailQuery
 
     public BookDetailViewModel Handle()
     {
-        var book = _dbContext.Books.Where(book => book.Id == BookId).SingleOrDefault();
+        var book = _dbContext.Books.Include(x=>x.Genre).Include(a => a.Author).Where(book => book.Id == BookId).SingleOrDefault();
         if (book is null)
         {
             throw new InvalidOperationException("Book not found!");
@@ -31,6 +32,7 @@ public class GetBookDetailQuery
     public class BookDetailViewModel
     {
         public string Title { get; set; }
+        public string AuthorName { get; set; }
         public string Genre { get; set; }
         public int PageCount { get; set; }
         public string PublishDate { get; set; }
