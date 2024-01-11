@@ -1,12 +1,15 @@
-﻿using FluentValidation;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using BookStore.DbOperations;
-using BookStore.Application.BookOperations.Queries.GetBooks;
-using BookStore.Application.BookOperations.Queries.GetBookDetail;
+﻿using AutoMapper;
+using BookStore.Application.BookOperations.Commands;
 using BookStore.Application.BookOperations.Commands.CreateBook;
-using BookStore.Application.BookOperations.Commands.UpdateBook;
 using BookStore.Application.BookOperations.Commands.DeleteBook;
+using BookStore.Application.BookOperations.Commands.UpdateBook;
+using BookStore.Application.BookOperations.Queries;
+using BookStore.Application.BookOperations.Queries.GetBookDetail;
+using BookStore.Application.BookOperations.Queries.GetBooks;
+using BookStore.DbOperations;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+
 namespace BookStore.Controllers;
 
 [ApiController]
@@ -15,12 +18,13 @@ public class BookController : ControllerBase
 {
     private readonly BookStoreDbContext _context;
     private readonly IMapper _mapper;
+
     public BookController(BookStoreDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
-
+    
     [HttpGet]
     public IActionResult GetBooks()
     {
@@ -28,6 +32,7 @@ public class BookController : ControllerBase
         var result = query.Handle();
         return Ok(result);
     }
+
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
@@ -52,20 +57,17 @@ public class BookController : ControllerBase
     [HttpPost]
     public IActionResult AddBook([FromBody] CreateBookCommand.CreateBookModel newBook)
     {
-
-        var command = new CreateBookCommand(_context, _mapper)
-        {
-            Model = newBook
-        };
-        var validator = new CreateBookCommandValidator(); //Fluent validation
-        validator.ValidateAndThrow(command); // Do validate
-        command.Handle();
-
+            var command = new CreateBookCommand(_context, _mapper)
+            {
+                Model = newBook
+            };
+            var validator = new CreateBookCommandValidator(); //Fluent validation
+            validator.ValidateAndThrow(command); // Do validate
+            command.Handle();
         /*catch (Exception e)
         {
             return BadRequest(e.Message);
-        }
-        }*/
+        }*/ 
         return Ok();
     }
 
@@ -89,6 +91,7 @@ public class BookController : ControllerBase
         }
         return Ok();
     }
+
     [HttpDelete("{id:int}")]
     public IActionResult DeleteBook(int id)
     {
