@@ -16,18 +16,19 @@ public class CreateGenreCommand
     }
 
     public void Handle()
-    {
-        var genre = _context.Genres.SingleOrDefault(x => x.Name == Model.Name);
-        if (genre is not null)
         {
-            throw new InvalidOperationException("Book type already exist!");
-        }
+            // Check if the genre with the same name already exists
+            var genre = _context.Genres.SingleOrDefault(x => x.Name == Model.Name);
 
-        genre = new Genre();
-        genre.Name = Model.Name;
-        _context.Genres.Add(genre);
-        _context.SaveChanges();
-    }
+            if (genre is not null)
+            {
+                throw new InvalidOperationException("Genre already exists!");
+            }
+
+            // Add the new genre to the database
+            _context.Genres.Add(new Genre { Name = Model.Name });
+            _context.SaveChanges();
+        }
 }
 
 public class CreateGenreModel

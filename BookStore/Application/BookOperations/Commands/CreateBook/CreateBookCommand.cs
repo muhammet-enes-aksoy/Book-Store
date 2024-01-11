@@ -16,20 +16,18 @@ public class CreateBookCommand
 
     public void Handle()
     {
+        // Check if the book with the same title already exists
         var book = _dbContext.Books.SingleOrDefault(x => x.Title == Model.Title);
+
         if (book != null)
         {
             throw new InvalidOperationException("The book already exists");
-
         }
-        book = new Book
-        {
-            Title = Model.Title,
-            GenreId = Model.GenreId,
-            PageCount = Model.PageCount,
-            PublishDate = Model.PublishDate
-        };
-        book = _mapper.Map<Book>(Model); //AutoMapper
+
+        // Map the CreateBookModel to the Book entity using AutoMapper
+        book = _mapper.Map<Book>(Model);
+
+        // Add the new book to the database
         _dbContext.Books.Add(book);
         _dbContext.SaveChanges();
     }

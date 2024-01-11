@@ -9,9 +9,9 @@ using BookStore.Application.BookOperations.Queries.GetBooks;
 using BookStore.DbOperations;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace BookStore.Controllers;
-
 [ApiController]
 [Route("[controller]s")]
 public class BookController : ControllerBase
@@ -24,10 +24,11 @@ public class BookController : ControllerBase
         _context = context;
         _mapper = mapper;
     }
-    
+
     [HttpGet]
     public IActionResult GetBooks()
     {
+        // Retrieve and return a list of books
         var query = new GetBooksQuery(_context, _mapper);
         var result = query.Handle();
         return Ok(result);
@@ -39,6 +40,7 @@ public class BookController : ControllerBase
         GetBookDetailQuery.BookDetailViewModel result;
         try
         {
+            // Retrieve book details by ID
             var query = new GetBookDetailQuery(_context, _mapper)
             {
                 BookId = id
@@ -57,17 +59,21 @@ public class BookController : ControllerBase
     [HttpPost]
     public IActionResult AddBook([FromBody] CreateBookCommand.CreateBookModel newBook)
     {
+        try
+        {
+            // Add a new book
             var command = new CreateBookCommand(_context, _mapper)
             {
                 Model = newBook
             };
-            var validator = new CreateBookCommandValidator(); //Fluent validation
-            validator.ValidateAndThrow(command); // Do validate
+            var validator = new CreateBookCommandValidator();
+            validator.ValidateAndThrow(command);
             command.Handle();
-        /*catch (Exception e)
+        }
+        catch (Exception e)
         {
             return BadRequest(e.Message);
-        }*/ 
+        }
         return Ok();
     }
 
@@ -76,13 +82,14 @@ public class BookController : ControllerBase
     {
         try
         {
+            // Update book details
             var command = new UpdateBookCommand(_context)
             {
                 BookId = id,
                 Model = updatedBook
             };
-            var validator = new UpdateBookCommandValidator(); //Fluent validation
-            validator.ValidateAndThrow(command); // Do validate
+            var validator = new UpdateBookCommandValidator();
+            validator.ValidateAndThrow(command);
             command.Handle();
         }
         catch (Exception e)
@@ -97,12 +104,13 @@ public class BookController : ControllerBase
     {
         try
         {
+            // Remove a book by ID
             var command = new DeleteBookCommand(_context)
             {
                 BookId = id
             };
-            var validator = new DeleteBookCommandValidator();//Fluent Validation
-            validator.ValidateAndThrow(command); // Do validate
+            var validator = new DeleteBookCommandValidator();
+            validator.ValidateAndThrow(command);
             command.Handle();
         }
         catch (Exception e)
@@ -112,3 +120,4 @@ public class BookController : ControllerBase
         return Ok();
     }
 }
+
